@@ -1,0 +1,63 @@
+<div class="card p-5">
+  <div class="card-header flex justify-content-between align-items-center mb-3">
+    <h1 id="tittle" class="m-0 mfont-medium text-xl font-semibold"> Listado de clientes <span> - Total: {{ clientesSignal() }} </span> </h1>
+    <div class="flex align-items-center">
+      <p-iconField class="mr-2" iconPosition="right">
+        <p-inputIcon styleClass="pi pi-search" />
+        <input type="text" pInputText placeholder="Buscar por nombre..."
+          (input)="dt.filterGlobal($any($event.target).value, 'startsWith')" />
+      </p-iconField>
+
+      <p-button icon="pi pi-tag" label="Crear" severity="success" (onClick)="crear()" />
+    </div>
+  </div>
+
+  <p-table #dt [value]="clientes" [paginator]="true" [rows]="5" [showCurrentPageReport]="true"
+    [tableStyle]="{ 'min-width': '50rem' }" [rowsPerPageOptions]="[5, 10, 15]"
+    currentPageReportTemplate="{first} de {last} clientes" [globalFilterFields]="['nombre']">
+
+    <ng-template pTemplate="header">
+      <tr class="text-sm">
+        <th style="width: 20%">Nombre</th>
+        <th style="width: 20%">Apellido</th>
+        <th style="width: 20%">Cedula</th>
+        <th style="width: 20%">Edad</th>
+        <th style="text-align: center; width: 20%">Acciones</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-cliente let-rowIndex="rowIndex">
+      <tr class="text-sm">
+        <td class="m2-td">{{ cliente.nombre }}</td>
+        <td class="m2-td">{{ cliente.apellido }}</td>
+        <td class="m2-td">{{ cliente.cedula }}</td>
+        <td class="m2-td">{{ cliente.edad }}</td>
+        <td class="flex align-items-center justify-content-center acciones">
+
+          <p-button class="btn mr-2" icon="pi pi-pencil" severity="warn" [pTooltip]="edt" tooltipPosition="bottom"
+            (onClick)="editar(cliente.id)" />
+          <ng-template #edt>
+            <span>Editar</span>
+          </ng-template>
+
+          <p-button class="" icon="pi pi-trash" severity="danger" [pTooltip]="elm" (click)="eliminar(cliente.id)"
+            tooltipPosition="bottom" />
+          <ng-template #elm>
+            <span>Eliminar</span>
+          </ng-template>
+
+        </td>
+      </tr>
+    </ng-template>
+
+    <!-- Plantilla para cuando no hay registros -->
+    <ng-template pTemplate="emptymessage">
+      <tr class="text-center">
+        <td class="text-center p-3" colspan="8">No hay registros disponibles</td>
+      </tr>
+    </ng-template>
+    <!-- Plantilla para cuando no hay registros -->
+
+  </p-table>
+
+</div>

@@ -1,0 +1,49 @@
+<ng-container *ngIf="isDesktop; else mobileLayout">
+  <!-- DESKTOP layout con splitter -->
+  <p-splitter layout="vertical" [panelSizes]="[10, 80, 10]" [gutterSize]="0">
+    
+    <!-- Navbar -->
+    <ng-template #panel>
+      <div class="app-navbar flex align-items-center w-full">
+        <app-navbar class="w-full flex" />
+      </div>
+    </ng-template>
+
+    <!-- Main -->
+    <ng-template #panel>
+      <div class="app-main w-full">
+        <ng-container *ngTemplateOutlet="routerContent"></ng-container>
+      </div>
+    </ng-template>
+
+    <!-- Footer -->
+    <ng-template #panel>
+      <div class="app-footer flex align-items-center">
+        <app-footer class="w-full flex" />
+      </div>
+    </ng-template>
+
+  </p-splitter>
+</ng-container>
+
+<!-- MOBILE layout -->
+<ng-template #mobileLayout>
+  <div class="mobile-layout">
+    <div class="app-navbar">
+      <app-navbar />
+    </div>
+
+    <div class="app-main">
+      <ng-container *ngTemplateOutlet="routerContent"></ng-container>
+    </div>
+
+    <div class="app-footer">
+      <app-footer />
+    </div>
+  </div>
+</ng-template>
+
+<!-- SINGLE ROUTER OUTLET (solo uno) -->
+<ng-template #routerContent>
+  <router-outlet></router-outlet>
+</ng-template>

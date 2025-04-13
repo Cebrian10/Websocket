@@ -1,0 +1,17 @@
+<div class="flex align-items-center justify-content-between w-full">
+  <div class="flex">
+    <div id="logo" class="flex cursor-pointer align-items-center pr-3" (click)="onLogoClick()">
+      <img class="w-3rem mx-2" src="./favicon.ico" alt="logo">
+      <div class="title">
+        <h1 class="m-0 p-0 text-2xl">Cebrian</h1>
+        <h6 class="m-0 p-0 text-xs">Ameth Aldair, S.A.</h6>
+      </div>
+    </div>
+    <p-menubar [model]="items" />
+  </div>
+  <p-button [icon]="iconTheme" [rounded]="true" [text]="true" [pTooltip]="tooltipContent"
+  (click)="toggleDarkMode()"/>
+  <ng-template #tooltipContent>
+    <span>{{ nameTheme }}</span>
+  </ng-template>
+</div>
