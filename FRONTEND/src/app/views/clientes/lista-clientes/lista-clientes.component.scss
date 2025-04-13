@@ -1,3 +1,18 @@
 ::ng-deep div.p-datatable.p-component {
   box-shadow: 0px 0px 10px -5px var(--p-text-color);
 }
+
+@media (max-width: 768px) {
+  .card-header {
+    flex-wrap: wrap;
+    justify-content: center !important;
+  }
+
+  .search {
+    width: 100%;
+  }
+
+  .card-secondary {
+    margin-top: 1rem;
+  }
+}

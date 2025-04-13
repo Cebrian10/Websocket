@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,6 +38,11 @@ public class ClienteController {
     return ResponseEntity.ok(clienteService.count(request));
   }
 
+  @GetMapping("/{id}")
+  public ResponseEntity<?> findById(@PathVariable Integer id, HttpServletRequest request) {
+    return ResponseEntity.ok().body(clienteService.findById(id, request));
+  }
+
   /* ----------------------------- Métodos POST ------------------------------ */
 
   @PostMapping("")
@@ -45,6 +51,11 @@ public class ClienteController {
   }
 
   /* ------------------------------ Métodos PUT ------------------------------ */
+
+  @PutMapping("/{id}")
+  public ResponseEntity<?> update(@PathVariable Integer id, @RequestBody @Valid Cliente cliente, HttpServletRequest request) {
+    return ResponseEntity.ok().body(clienteService.update(id, cliente, request));
+  }
 
   /* ---------------------------- Métodos DELETE ---------------------------- */
 

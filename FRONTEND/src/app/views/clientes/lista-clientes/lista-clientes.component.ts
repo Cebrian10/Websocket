@@ -1,5 +1,5 @@
 // Importaciones de angular
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 // Importaciones de primeng
@@ -18,7 +18,6 @@ import { SweetalertService } from '../../../core/services/sweetalert.service';
 // Interfaces
 import { Cliente } from '../Cliente';
 import { WebsocketService } from '../../../core/services/websocket.service';
-import { Message } from '@stomp/stompjs';
 
 @Component({
   selector: 'app-lista-clientes',
@@ -36,31 +35,23 @@ export class ListaClientesComponent implements OnInit {
   private readonly ws = inject(WebsocketService);
 
   clientes: Cliente[] = [];
-  clientesSignal = this.ws.subscribe<any[]>('/topic/clientes');
-
-  ngOnInit() {
-
-  }
+  clientesCountSignal = signal<number | null>(null);
 
   constructor() {
-    // Primero te suscribís para tener la señal
-    // const clientesSignal = this.ws.subscribe<any[]>('/topic/clientes');
+    // WebSocket para cambios en tiempo real
+    const wsSignal = this.ws.subscribe<number>('/topic/clientes/count');
 
-    // Luego esperás que el WebSocket esté conectado
-    this.ws.publishWhenReady('/app/init', {}).then(() => {
-      // En este punto el servidor debería responder a /topic/clientes
-
-      // Esperás a que llegue el valor usando un pequeño intervalo o efecto
-      const interval = setInterval(() => {
-        const data = this.clientesSignal();
-        if (data) {
-          console.log('✅ Clientes recibidos:', data);
-          clearInterval(interval);
-        }
-      }, 100); // chequea cada 100ms si llegó
+    effect(() => {
+      const value = wsSignal();
+      if (value != null) {
+        this.clientesCountSignal.set(value);
+      }
     });
+  }
 
-    this.fetchClientes(); // si es necesario
+  ngOnInit() {
+    this.fetchClientesCount();
+    this.fetchClientes();
   }
 
 
@@ -73,6 +64,12 @@ export class ListaClientesComponent implements OnInit {
 
       }
     })
+  }
+
+  fetchClientesCount() {
+    this.api.get<number>('clientes/count').subscribe(count => {
+      this.clientesCountSignal.set(count);
+    });
   }
 
   crear = () => this.router.navigate([this.router.url + '/crear']);

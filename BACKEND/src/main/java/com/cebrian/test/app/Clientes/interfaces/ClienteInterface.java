@@ -15,11 +15,15 @@ public interface ClienteInterface {
 
   List<Cliente> findAll(HttpServletRequest request);
 
+  Cliente findById(Integer id, HttpServletRequest request);
+
   /* ----------------------------- Métodos POST ------------------------------ */
 
   Response save(Cliente cliente, HttpServletRequest request);
 
   /* ------------------------------ Métodos PUT ------------------------------ */
+
+  Response update(Integer id, Cliente cliente, HttpServletRequest request);
 
   /* ---------------------------- Métodos DELETE ---------------------------- */
 

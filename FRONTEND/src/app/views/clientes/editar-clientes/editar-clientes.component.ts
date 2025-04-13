@@ -1,7 +1,7 @@
 // Importaciones de angular
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 
 // Importaciones de PrimeNG
@@ -16,6 +16,7 @@ import { ApiService } from '../../../core/services/api.service';
 
 // Interfaces
 import { Response } from '../../../shared/Response.interface';
+import { Cliente } from '../Cliente';
 
 @Component({
   selector: 'app-editar-clientes',
@@ -30,10 +31,12 @@ export class EditarClientesComponent implements OnInit {
   private readonly api = inject(ApiService);
   private readonly swtAlert = inject(SweetalertService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
   readonly location = inject(Location);
 
   // Variables
   form!: FormGroup;
+  id = this.activatedRoute.snapshot.paramMap.get('id');
 
   // --------------------- Métodos del ciclo de Angular (ngOnInit) ---------------------
 
@@ -44,12 +47,21 @@ export class EditarClientesComponent implements OnInit {
       cedula: ['', Validators.required],
       edad: [0, Validators.required],
     });
+
+    this.fetchCliente();
+  }
+
+  fetchCliente() {
+    this.api.get<Cliente>(`clientes/${this.id}`).subscribe({
+      next: (data) => this.form.patchValue(data),
+      error: (error) => { }
+    })
   }
 
   editar() {
     this.swtAlert.showLoading('Editando cliente...', 'Por favor espere un momento');
 
-    this.api.put<Response>('clientes', this.form.value).subscribe({
+    this.api.put<Response>(`clientes/${this.id}`, this.form.value).subscribe({
       next: (res) => {
         this.swtAlert.show(res.icon, res.title, res.message, () => {
           (res.icon === 'success') ? this.router.navigate(['/clientes']) : '';

@@ -1,8 +1,11 @@
 package com.cebrian.test.app.Clientes.service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +45,15 @@ public class ClienteService implements ClienteInterface {
     }
   }
 
+  @Override
+  public Cliente findById(Integer id, HttpServletRequest request) {
+    try {
+      return clienteRepository.findById(id).orElse(null);
+    } catch (Exception e) {
+      throw e;
+    }
+  }
+
   /* ----------------------------- Métodos POST ------------------------------ */
 
   @Override
@@ -51,6 +63,8 @@ public class ClienteService implements ClienteInterface {
       this.subscribeToTopic(request);
 
       return new Response("success", "Cliente guardado correctamente", "");
+    } catch (DataIntegrityViolationException e) {
+      return new Response("warning", "Cédula duplicada", "Ya existe un cliente con esta cédula");
     } catch (Exception e) {
       return new Response("error", "Error al guardar el cliente", "");
     }
@@ -58,11 +72,33 @@ public class ClienteService implements ClienteInterface {
 
   /* ------------------------------ Métodos PUT ------------------------------ */
 
+  @Override
   public Response update(Integer id, Cliente cliente, HttpServletRequest request) {
     try {
-      clienteRepository.save(cliente);
+      Cliente existingCliente = this.findById(id, request);
+      Field[] fields = cliente.getClass().getDeclaredFields();
+      AtomicInteger count = new AtomicInteger(0);
 
-      return new Response("success", "Cliente actualizado correctamente", "");
+      for (Field field : fields) {
+        field.setAccessible(true);
+        Object newValue = field.get(cliente);
+        Object oldValue = field.get(existingCliente);
+        // String fieldName = field.getName(); // En caso de querer guardar que campo
+        // fue cambiado
+
+        if (newValue != null && !newValue.equals(oldValue)) {
+          field.set(existingCliente, newValue);
+          count.incrementAndGet();
+        }
+      }
+
+      if (count.get() == 0) {
+        return new Response("info", "No se han realizado cambios", "");
+      } else {
+        cliente.setId(id);
+        clienteRepository.save(cliente);
+        return new Response("success", "Cliente actualizado correctamente", "");
+      }
     } catch (Exception e) {
       return new Response("error", "Error al actualizar el cliente", "");
     }
@@ -87,7 +123,7 @@ public class ClienteService implements ClienteInterface {
   public void subscribeToTopic(HttpServletRequest request) {
     try {
       long totalClientes = this.count(request);
-      messagingTemplate.convertAndSend("/topic/clientes", totalClientes);
+      messagingTemplate.convertAndSend("/topic/clientes/count", totalClientes);
     } catch (Exception e) {
       throw e;
     }

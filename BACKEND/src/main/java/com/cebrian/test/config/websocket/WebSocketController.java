@@ -1,7 +1,6 @@
 package com.cebrian.test.config.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import org.springframework.messaging.handler.annotation.*;
@@ -22,7 +21,12 @@ public class WebSocketController {
   // Escucha mensajes que vienen desde Angular (/app/init por ejemplo)
   @MessageMapping("/init")
   public void handleInit() {
-    messagingTemplate.convertAndSend("/topic/clientes", clienteService.count(null));
+    messagingTemplate.convertAndSend("/topic/init", "connected");
+  }
+
+  @MessageMapping("/clientes")
+  public void handleCliente(@Payload String clienteJson) {
+    messagingTemplate.convertAndSend("/topic/clientes/count", clienteService.count(null));
   }
 
   @MessageMapping("/ventas")
