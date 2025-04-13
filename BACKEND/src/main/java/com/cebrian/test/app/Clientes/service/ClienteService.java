@@ -58,6 +58,16 @@ public class ClienteService implements ClienteInterface {
 
   /* ------------------------------ Métodos PUT ------------------------------ */
 
+  public Response update(Integer id, Cliente cliente, HttpServletRequest request) {
+    try {
+      clienteRepository.save(cliente);
+
+      return new Response("success", "Cliente actualizado correctamente", "");
+    } catch (Exception e) {
+      return new Response("error", "Error al actualizar el cliente", "");
+    }
+  }
+
   /* ---------------------------- Métodos DELETE ---------------------------- */
 
   @Override

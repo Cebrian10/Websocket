@@ -13,11 +13,11 @@ app-footer {
 }
 
 ::ng-deep div:has(.app-navbar) {
-  box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 0px 10px -5px var(--p-text-color);
 }
 
 ::ng-deep div:has(.app-footer) {
-  box-shadow: 0px -1px 5px 0px rgba(0, 0, 0, 0.17);
+  box-shadow: 0px 0px 10px -5px var(--p-text-color);
 }
 
 /* Mostrar solo en desktop */

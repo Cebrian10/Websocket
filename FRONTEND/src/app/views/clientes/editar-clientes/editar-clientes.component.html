@@ -2,12 +2,12 @@
   <div class="card">
     <div class="card-header flex justify-content-between align-items-center mb-3">
       <h1 id="tittle" class="m-0 mfont-medium text-xl font-semibold">
-        Crear cliente
+        Editar cliente
       </h1>
 
       <div class="flex card-header-second">
         <p-button class="mr-2" (click)="this.location.back()" label="Cancelar" severity="secondary" [raised]="true" />
-        <p-button label="Crear" severity="success" (click)="crear()" [raised]="true" [disabled]="form.invalid" />
+        <p-button label="Actualizar" severity="success" (click)="editar()" [raised]="true" [disabled]="form.invalid" />
       </div>
     </div>
   </div>

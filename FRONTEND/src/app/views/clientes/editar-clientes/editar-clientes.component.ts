@@ -18,13 +18,12 @@ import { ApiService } from '../../../core/services/api.service';
 import { Response } from '../../../shared/Response.interface';
 
 @Component({
-  selector: 'app-crear-clientes',
-  standalone: true,
+  selector: 'app-editar-clientes',
   imports: [ButtonModule, InputGroupModule, InputGroupAddonModule, InputTextModule, ReactiveFormsModule],
-  templateUrl: './crear-clientes.component.html',
-  styleUrl: './crear-clientes.component.scss'
+  templateUrl: './editar-clientes.component.html',
+  styleUrl: './editar-clientes.component.scss'
 })
-export class CrearClientesComponent implements OnInit {
+export class EditarClientesComponent implements OnInit {
 
   // Inyección de servicios
   private readonly fb = inject(FormBuilder);
@@ -46,11 +45,11 @@ export class CrearClientesComponent implements OnInit {
       edad: [0, Validators.required],
     });
   }
-  
-  crear() {
-    this.swtAlert.showLoading('Creando cliente...', 'Por favor espere un momento');
 
-    this.api.post<Response>('clientes', this.form.value).subscribe({
+  editar() {
+    this.swtAlert.showLoading('Editando cliente...', 'Por favor espere un momento');
+
+    this.api.put<Response>('clientes', this.form.value).subscribe({
       next: (res) => {
         this.swtAlert.show(res.icon, res.title, res.message, () => {
           (res.icon === 'success') ? this.router.navigate(['/clientes']) : '';
